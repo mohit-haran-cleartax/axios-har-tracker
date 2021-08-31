@@ -1,6 +1,8 @@
 import { AxiosStatic } from 'axios';
 import * as cookie from 'cookie';
 
+const _ = require('lodash');
+
 interface HarFile {
   log: {
     version: string,
@@ -83,13 +85,18 @@ export class AxiosHarTracker {
   }
 
   private returnRequestObject(config) {
+    const filteredheaders = _.omit(config.headers, ['common', 'get', 'post', 'put', 'patch', 'delete', 'head']);
     const requestObject = {
       method: config.method,
       url: config.url,
       httpVersion: 'HTTP/1.1',
       cookies: this.getCookies(JSON.stringify(config.headers['Cookie'])),
-      headers: this.getHeaders(config.headers['common']),
+      headers: this.getHeaders(filteredheaders ? filteredheaders : config.headers['common']),
       queryString: this.getParams(config.params),
+      postData: config.method == 'post' ? {
+        mimeType: config.headers['content-type'],
+        text: typeof(config.data) === 'object' ? JSON.stringify(config.data) :  config.data
+      } : undefined,
       headersSize: -1,
       bodySize: -1
     };
@@ -189,6 +196,10 @@ export class AxiosHarTracker {
 
   private getHeaders(headersObject) {
     return headersObject ? this.transformObjectToArray(headersObject) : [];
+  }
+
+  public clearEntries() {
+    this.generatedHar.log.entries = [];
   }
 
 }

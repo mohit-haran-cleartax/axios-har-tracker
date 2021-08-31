@@ -1,6 +1,6 @@
 {
   "name": "axios-har-tracker",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "",
   "main": "dist/axios-har-tracker.js",
   "scripts": {
@@ -28,7 +28,8 @@
   "license": "MIT",
   "dependencies": {
     "axios": "0.21.1",
-    "cookie": "^0.4.1"
+    "cookie": "^0.4.1",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/jest": "^26.0.19",
